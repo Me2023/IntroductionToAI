@@ -30,7 +30,11 @@ def shopSmart(orderList, fruitShops):
         fruitShops: List of FruitShops
     """
     "*** YOUR CODE HERE ***"
-    return None
+    shop1 = fruitShops[0]
+    shop2 = fruitShops[1]
+    if shop.FruitShop.getPriceOfOrder(shop1, orderList) > shop.FruitShop.getPriceOfOrder(shop2, orderList):
+        return shop2
+    return shop1
 
 
 if __name__ == '__main__':
