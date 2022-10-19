@@ -87,7 +87,20 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
+    reached = set()             # an empty set
+    frontier = util.Stack()
+    frontier.push(problem.getStartState())
+    while not frontier.isEmpty():
+        node = frontier.pop()
+        if problem.isGoalState(node):
+            return node
+        if node not in reached:
+            reached.add(node)
+            for childNode in problem.getSuccessors(node):
+                frontier.push(childNode)
+
     util.raiseNotDefined()
+# python3 pacman.py -l tinyMaze -p SearchAgent -a fn=depthFirstSearch
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
