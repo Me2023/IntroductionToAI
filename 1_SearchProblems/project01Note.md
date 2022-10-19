@@ -7,9 +7,9 @@ python3 pacman.py -l tinyMaze -p SearchAgent -a fn=tinyMazeSearch
 The command above tells the `SearchAgent` to use `tinyMazeSearch` as its search algorithm, which is implemented in search.py. Pacman should navigate the maze successfully.
 
 ```
-python3 pacman.py -l tinyMaze -p SearchAgent
-python3 pacman.py -l mediumMaze -p SearchAgent
-python3 pacman.py -l bigMaze -z .5 -p SearchAgent
+python3 pacman.py -l tinyMaze -p SearchAgent -a fn=depthFirstSearch
+python3 pacman.py -l mediumMaze -p SearchAgent -a fn=depthFirstSearch
+python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=depthFirstSearch
 ```
 ```
 python3 autograder.py -q q1
@@ -49,3 +49,44 @@ def depthFirstSearch(problem):
 
 ```
 ### My Trial
+At first, I didn't figure out what a `state` stood for, and regarded `node` as `state`, which led to the incorrect code below: 
+
+
+```python
+frontier.push(problem.getStartState())
+```
+```python
+node = frontier.pop()
+```
+```python
+for childNode in problem.getSuccessors(node):
+    frontier.push(childNode)
+```
+
+
+Just notice that a state is a tuple consisting of `node`, `cost` and `path`.
+```python
+state = (node, cost, path)  # tuple
+```
+- `node`:
+- `path`:
+
+
+Corrected:
+```python
+start = (problem.getStartState(), 0, [])    # (node, cost, path)
+frontier.push(start)
+```
+```python
+(node, cost, path) = frontier.pop()
+```
+```python
+for childNode, childAction, childCost in problem.getSuccessors(node):
+    newPath = path + [childAction]
+    newCost = cost + childCost
+    newState = (childNode, newCost, newPath)
+    frontier.push(newState)
+```
+
+What is `path`?
+
