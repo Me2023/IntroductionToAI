@@ -87,17 +87,21 @@ def depthFirstSearch(problem: SearchProblem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    reached = set()             # an empty set
-    frontier = util.Stack()
-    frontier.push(problem.getStartState())
+    reached = set()             # An empty set. "closed" is also ok
+    frontier = util.Stack()     # "fringe" is also ok
+    start = (problem.getStartState(), 0, [])    # (node, cost, path)
+    frontier.push(start)
     while not frontier.isEmpty():
-        node = frontier.pop()
+        (node, cost, path) = frontier.pop()
         if problem.isGoalState(node):
-            return node
+            return path
         if node not in reached:
             reached.add(node)
-            for childNode in problem.getSuccessors(node):
-                frontier.push(childNode)
+            for childNode, childAction, childCost in problem.getSuccessors(node):
+                newPath = path + [childAction]
+                newCost = cost + childCost
+                newState = (childNode, newCost, newPath)
+                frontier.push(newState)
 
     util.raiseNotDefined()
 # python3 pacman.py -l tinyMaze -p SearchAgent -a fn=depthFirstSearch
