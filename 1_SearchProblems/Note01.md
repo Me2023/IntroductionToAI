@@ -39,14 +39,14 @@ def graphSearch(problem, frontier):
     return failure
 ```
 
-## Depth-First Search (DFS)
+## Depth-First Search (DFS) (Q1)
 Removing the deepest node and replacing it on the frontier with its children necessarily means the children are now the new deepest nodes.
 
 To implement DFS. we require a structure that always gives the most recently added objects highest priority.
 
 A *last-in, first-out (LIFO) stack* does exactly this.
 
-## Breath-First Search (BFS)
+## Breath-First Search (BFS) (Q2)
 If we want to visit shallower nodes before deeper nodes, we must visit
 nodes in their order of insertion. 
 
@@ -54,7 +54,7 @@ Hence, we desire a structure that outputs the oldest enqueued object to represen
 
 For this, BFS uses a *first-in, first-out (FIFO) queue*, which does exactly this.
 
-## Uniform Cost Search (UCS)
+## Uniform Cost Search (UCS) (Q3)
 Uniform cost search (UCS), our last strategy, is a strategy for exploration that always selects the lowest cost frontier node from the start node for expansion.
 
 To represent the frontier for UCS, the choice is usually a *heap-based priority
@@ -63,9 +63,19 @@ queue*, where the priority for a given enqueued node v is the path cost from the
 Intuitively, a priority queue constructed in this manner simply reshuffles itself to maintain the desired ordering by path cost as we remove the current minimum cost path and replace it with its children.
 
 # Informed Search
-## Heuristics
+## Heuristics (Q6)
+Heuristics are the driving force that allow estimation of distance to goal states - they’re *functions* that take
+in a *state* as input and output a corresponding *estimate*.
+
+A common heuristic that’s used to solve this problem is the **Manhattan distance**, which for two points $(x_1, x_2)$ and $(x_2,y_2)$ is defined as follows:
+$$Manhattan(x_1, y_1,x_2,y_2) = |x_1−x_2|+|y_1−y_2|$$
+
+> For Project 1
+>> Assuming Pacman desires to get to the bottom left corner of the maze, it computes the *distance* from Pacman’s current location to Pacman’s desired location *assuming a lack of walls in the maze*. 
+>> 
+>> This distance is the exact goal distance in the relaxed search problem, and correspondingly is the estimated goal distance in the actual search problem.
 ## Greedy Search
-## A* Search
+## A* Search (Q4)
 A* search is a strategy for exploration that always selects the frontier node with the *lowest estimated total cost* for expansion, where total cost is the entire cost from the start node to the goal node.
 
 Just like greedy search and UCS, A* search also uses a *priority queue* to represent its frontier. 

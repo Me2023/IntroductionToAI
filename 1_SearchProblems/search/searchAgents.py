@@ -34,6 +34,7 @@ description for details.
 Good luck and happy searching!
 """
 
+from turtle import position
 from typing import List, Tuple, Any
 from game import Directions
 from game import Agent
@@ -375,11 +376,18 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
+    "*** YOUR CODE HERE ***"
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
-    "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    position, corner1, corner2, corner3, corner4 = state
+    cornersState = (corner1, corner2, corner3, corner4)
+    i = 0
+    distance = [0, 0, 0, 0]
+    for cornerPos in corners:
+        if not cornersState[i]:         # not been hit
+            distance[i] = abs(position[0] - cornerPos[0]) + abs(position[1] - cornerPos[1])
+        i += 1
+    return max(distance) # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -473,7 +481,13 @@ def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodPos = foodGrid.asList()
+    i = 0
+    distance = [0] * foodPos.len()
+    for food in foodPos:
+        distance[i] = abs(position[0] - food[0]) + abs(position[1] - food[1])
+        i += 1
+    return max(distance)
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"

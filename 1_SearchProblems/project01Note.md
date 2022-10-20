@@ -106,6 +106,7 @@ What is `path`?
 > In graph theory, a path in a graph is a finite or infinite sequence of edges which joins a sequence of vertices.
 
 ## Question 2: Breadth First Search
+`breadthFirstSearch` in search.py
 ```
 python3 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
 python3 pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
@@ -115,6 +116,7 @@ frontier = util.Queue()
 ```
 
 ## Question 3: Varying the Cost Function
+`uniformCostSearch` in search.py
 ```
 python3 pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
 python3 pacman.py -l mediumDottedMaze -p StayEastSearchAgent -a fn=ucs
@@ -189,7 +191,7 @@ if not hitsWall:
                 corIndex += 1
     successors.append( ( nextState, action, cost) )
 ```
--Problems:
+- Problems:
     - `nextState[corIndex] == True` -> 'tuple' object does not support item assignment
     - `if...for` is not necessary
 
@@ -218,4 +220,70 @@ def getSuccessors(self, state: Any):
 
 
 ## Question 6: Corners Problem: Heuristic
+`cornersHeuristic` in searchAgents.py
+### How to Test our Heuristic for the `CornersProblem`
+```
+python3 pacman.py -l mediumCorners -p AStarCornersAgent -z 0.5
+```
+AStarCornersAgent is a shortcut, or:
+```
+python3 pacman.py -l mediumCorners -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic
+```
 
+### My First Trial
+```python
+def cornersHeuristic(state: Any, problem: CornersProblem):
+    corners = problem.corners # These are the corner coordinates
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    position, corner1, corner2, corner3, corner4 = state
+    cornersState = (corner1, corner2, corner3, corner4)
+    i = 0
+    distance = 0
+    for cornerPos in corners:
+        if not cornersState[i]:         # not been hit
+            distance += abs(position[0] - cornerPos[0]) + abs(position[1] - cornerPos[1])
+        i += 1
+    return distance
+```
+- Problems:
+    - not takes `walls` into account -> relaxed search problem
+    - can't work
+
+### Final Answer
+```python
+def cornersHeuristic(state: Any, problem: CornersProblem):
+    corners = problem.corners # These are the corner coordinates
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    position, corner1, corner2, corner3, corner4 = state
+    cornersState = (corner1, corner2, corner3, corner4)
+    i = 0
+    distance = [0, 0, 0, 0]
+    for cornerPos in corners:
+        if not cornersState[i]:         # not been hit
+            distance[i] = abs(position[0] - cornerPos[0]) + abs(position[1] - cornerPos[1])
+        i += 1
+    return max(distance)
+```
+
+---
+
+## Question 7: Eating All The Dots
+Fill in `foodHeuristic` in searchAgents.py with a consistent heuristic for the `FoodSearchProblem`. 
+
+### Preview
+A* with a null heuristic (equivalent to uniform-cost search) should quickly find an optimal solution to testSearch with no code change (total cost of 7).
+```
+python3 pacman.py -l testSearch -p AStarFoodSearchAgent
+```
+*Note:* AStarFoodSearchAgent is a shortcut for
+```
+-p SearchAgent -a fn=astar,prob=FoodSearchProblem,heuristic=foodHeuristic
+```
+
+### How to Test our heuristic for `FoodSearchProblem`
+```
+python pacman.py -l trickySearch -p AStarFoodSearchAgent
+```
+
+### about Arguments
+The state is a tuple ( pacmanPosition, foodGrid ) where foodGrid is a Grid (see game.py) of either True or False. You can call foodGrid.asList() to get a list of food coordinates instead.
