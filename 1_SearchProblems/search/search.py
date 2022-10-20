@@ -102,19 +102,45 @@ def depthFirstSearch(problem: SearchProblem):
                 newCost = cost + childCost
                 newState = (childNode, newCost, newPath)
                 frontier.push(newState)
-
-    util.raiseNotDefined()
 # python3 pacman.py -l tinyMaze -p SearchAgent -a fn=depthFirstSearch
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    reached = set()
+    frontier = util.Queue()
+    start = (problem.getStartState(), 0, [])    # (node, cost, path)
+    frontier.push(start)
+    while not frontier.isEmpty():
+        (node, cost, path) = frontier.pop()
+        if problem.isGoalState(node):
+            return path
+        if node not in reached:
+            reached.add(node)
+            for childNode, childAction, childCost in problem.getSuccessors(node):
+                newPath = path + [childAction]
+                newCost = cost + childCost
+                newState = (childNode, newCost, newPath)
+                frontier.push(newState)
 
 def uniformCostSearch(problem: SearchProblem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    reached = set()
+    frontier = util.PriorityQueue()
+    start = (problem.getStartState(), 0, [])    # (node, cost, path)
+    frontier.push(start, 0)
+    while not frontier.isEmpty():
+        (node, cost, path) = frontier.pop()
+        if problem.isGoalState(node):
+            return path
+        if node not in reached:
+            reached.add(node)
+            for childNode, childAction, childCost in problem.getSuccessors(node):
+                newPath = path + [childAction]
+                newCost = cost + childCost
+                newState = (childNode, newCost, newPath)
+                frontier.push(newState, newCost)
 
 def nullHeuristic(state, problem=None):
     """
@@ -126,7 +152,23 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    reached = set()
+    frontier = util.PriorityQueue()
+    startState = (problem.getStartState(), 0, [])    # (node, cost, path)
+    totalCost = 0 + heuristic(startState[0], problem)
+    frontier.push(startState, totalCost)
+    while not frontier.isEmpty():
+        (node, cost, path) = frontier.pop()
+        if problem.isGoalState(node):
+            return path
+        if node not in reached:
+            reached.add(node)
+            for childNode, childAction, childCost in problem.getSuccessors(node):
+                newPath = path + [childAction]
+                newCost = cost + childCost
+                newState = (childNode, newCost, newPath)
+                newTotalCost = newCost + heuristic(newState[0], problem)
+                frontier.push(newState, newTotalCost)
 
 
 # Abbreviations
