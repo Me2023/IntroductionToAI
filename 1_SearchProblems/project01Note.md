@@ -1,5 +1,5 @@
-## Question 1 (3 points): Finding a Fixed Food Dot using Depth First Search
-### How to Test `SearchAgent`
+## Question 1: Finding a Fixed Food Dot using Depth First Search
+### How to Test `Search`
 https://inst.eecs.berkeley.edu/~cs188/su22/project1/#question-1-3-points-finding-a-fixed-food-dot-using-depth-first-search
 ```
 python3 pacman.py -l tinyMaze -p SearchAgent -a fn=tinyMazeSearch
@@ -68,9 +68,6 @@ Just notice that a state is a tuple consisting of `node`, `cost` and `path`.
 ```python
 state = (node, cost, path)  # tuple
 ```
-- `node`:
-- `path`:
-
 
 Corrected:
 ```python
@@ -87,6 +84,138 @@ for childNode, childAction, childCost in problem.getSuccessors(node):
     newState = (childNode, newCost, newPath)
     frontier.push(newState)
 ```
-
+Final answer:
+```python
+reached = set()             # An empty set. "closed" is also ok
+frontier = util.Stack()     # "fringe" is also ok
+start = (problem.getStartState(), 0, [])    # (node, cost, path)
+frontier.push(start)
+while not frontier.isEmpty():
+    (node, cost, path) = frontier.pop()
+    if problem.isGoalState(node):
+        return path
+    if node not in reached:
+        reached.add(node)
+        for childNode, childAction, childCost in problem.getSuccessors(node):
+            newPath = path + [childAction]
+            newCost = cost + childCost
+            newState = (childNode, newCost, newPath)
+            frontier.push(newState)
+```
 What is `path`?
+> In graph theory, a path in a graph is a finite or infinite sequence of edges which joins a sequence of vertices.
+
+## Question 2: Breadth First Search
+```
+python3 pacman.py -l mediumMaze -p SearchAgent -a fn=bfs
+python3 pacman.py -l bigMaze -p SearchAgent -a fn=bfs -z .5
+```
+```python
+frontier = util.Queue()
+```
+
+## Question 3: Varying the Cost Function
+```
+python3 pacman.py -l mediumMaze -p SearchAgent -a fn=ucs
+python3 pacman.py -l mediumDottedMaze -p StayEastSearchAgent -a fn=ucs
+python3 pacman.py -l mediumScaryMaze -p StayWestSearchAgent -a fn=ucs
+```
+```python
+frontier = util.PriorityQueue()
+frontier.push(start, 0)
+frontier.push(newState, newCost)
+```
+
+## Question 4: A* search
+### Arguments and Test
+Implement A* graph search in the empty function `aStarSearch` in search.py. A* takes a `heuristic` function as an argument. 
+
+Heuristics take two arguments: a `state` in the search problem (the main argument), and the `problem` itself (for reference information). 
+
+The `nullHeuristic` heuristic function in search.py is a trivial example.
+
+```python
+def nullHeuristic(state, problem=None):
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+    """
+    return 0
+```
+Test in terminal:
+```
+python3 pacman.py -l bigMaze -z .5 -p SearchAgent -a fn=astar,heuristic=manhattanHeuristic
+```
+
+### Final Answer
+```python
+totalCost = 0 + heuristic(startState[0], problem)
+frontier.push(startState, totalCost)
+
+newTotalCost = newCost + heuristic(newState[0], problem)
+frontier.push(newState, newTotalCost)
+```
+
+*Note:* not `heuristic(startState, problem)` but `heuristic(startState[0], problem)`
+
+---
+The real power of A* will only be apparent with a more challenging search problem. Now, it’s time to formulate a *new problem* and *design a heuristic* for it.
+
+## Question 5: Finding All the Corners
+Implement the `CornersProblem` search problem in searchAgents.py. 
+
+### How to Test our Problem
+```
+python3 pacman.py -l tinyCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+python3 pacman.py -l mediumCorners -p SearchAgent -a fn=bfs,prob=CornersProblem
+```
+### My Trial
+```python
+currentPosition, corner1, corner2, corner3, corner4 = state
+x, y = currentPosition
+dx, dy = Actions.directionToVector(action)
+nextx, nexty = int(x + dx), int(y + dy)
+hitsWall = self.walls[nextx][nexty]
+if not hitsWall:
+    nextState = ((nextx, nexty), corner1, corner2, corner3, corner4)
+    cost = 1
+    if (nextx, nexty) in self.corners:      # touch a corner
+        corIndex = 1
+        for corPos in self.corners:         # which corner    
+            if (nextx, nexty) == corPos:
+                nextState[corIndex] == True
+                break
+            else:
+                corIndex += 1
+    successors.append( ( nextState, action, cost) )
+```
+-Problems:
+    - `nextState[corIndex] == True` -> 'tuple' object does not support item assignment
+    - `if...for` is not necessary
+
+### Final Answer
+```python
+def getSuccessors(self, state: Any):
+    successors = []
+    for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+        currentPosition, corner1, corner2, corner3, corner4 = state
+        x, y = currentPosition
+        dx, dy = Actions.directionToVector(action)
+        nextx, nexty = int(x + dx), int(y + dy)
+        hitsWall = self.walls[nextx][nexty]
+        if not hitsWall:
+            nextPosition = (nextx, nexty)
+            cost = 1
+            nextState = (nextPosition, 
+                            True if nextPosition == self.corners[0] else corner1,
+                            True if nextPosition == self.corners[1] else corner2, 
+                            True if nextPosition == self.corners[2] else corner3,
+                            True if nextPosition == self.corners[3] else corner4)
+            successors.append( ( nextState, action, cost) )
+    self._expanded += 1
+    return successors
+```
+
+
+## Question 6: Corners Problem: Heuristic
 
