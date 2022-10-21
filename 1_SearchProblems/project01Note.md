@@ -373,9 +373,34 @@ You’ll write an agent that always greedily eats the closest dot. `ClosestDotSe
 
 Implement the function `findPathToClosestDot` in searchAgents.py. 
 
-*Hint:* The quickest way to complete `findPathToClosestDot` is to fill in the AnyFoodSearchProblem, which is missing its goal test. Then, solve that problem with an appropriate search function. The solution should be very short!
+*Hint:* The quickest way to complete `findPathToClosestDot` is to fill in the `AnyFoodSearchProblem`, which is missing its goal test (`isGoalState`). Then, solve that problem with an appropriate *search function*. The solution should be very short!
+
+ - *search function:* return a list of actions that reaches the goal (path)
+    - `depthFirstSearch(problem: SearchProblem)`
+    - `breadthFirstSearch(problem: SearchProblem)`
+    - `uniformCostSearch(problem: SearchProblem)`
+
 
 ### How to Test
 ```
 python3 pacman.py -l bigSearch -p ClosestDotSearchAgent -z .5
+```
+
+### Final Answer
+In `ClosestDotSearchAgent`:
+```python
+def findPathToClosestDot(self, gameState: pacman.GameState):
+    """
+    Returns a path (a list of actions) to the closest dot, starting from
+    gameState.
+    """
+    problem = AnyFoodSearchProblem(gameState)
+    return search.aStarSearch(problem)
+```
+
+In `AnyFoodSearchProblem`:
+```python
+def isGoalState(self, state: Tuple[int, int]):
+    x,y = state
+    return state in self.food.asList()
 ```
