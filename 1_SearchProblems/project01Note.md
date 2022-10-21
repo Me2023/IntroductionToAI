@@ -230,6 +230,14 @@ AStarCornersAgent is a shortcut, or:
 python3 pacman.py -l mediumCorners -p SearchAgent -a fn=aStarSearch,prob=CornersProblem,heuristic=cornersHeuristic
 ```
 
+### Admissibility vs. Consistency
+> ***Admissibility vs. Consistency:*** 
+> 
+> Remember, heuristics are just functions that take search states and return numbers that estimate the cost to a nearest goal. More effective heuristics will return values closer to the actual goal costs. 
+> 
+> - To be admissible, the heuristic values must be *lower bounds* on the actual shortest path cost to the nearest goal (and non-negative). 
+> - To be consistent, it must additionally hold that if an action has cost c, then taking that action can only cause a *drop in heuristic of at most c*.
+
 ### My First Trial
 ```python
 def cornersHeuristic(state: Any, problem: CornersProblem):
@@ -282,8 +290,92 @@ python3 pacman.py -l testSearch -p AStarFoodSearchAgent
 
 ### How to Test our heuristic for `FoodSearchProblem`
 ```
-python pacman.py -l trickySearch -p AStarFoodSearchAgent
+python3 pacman.py -l trickySearch -p AStarFoodSearchAgent
 ```
 
 ### about Arguments
-The state is a tuple ( pacmanPosition, foodGrid ) where foodGrid is a Grid (see game.py) of either True or False. You can call foodGrid.asList() to get a list of food coordinates instead.
+- The state is a tuple ( pacmanPosition, foodGrid ) 
+    - foodGrid is a `Grid` (see game.py) of either True or False. You can call `foodGrid.asList()` to get a list of food coordinates instead.
+
+### My First Trial
+I thought it is the same as the heuristic for `CornersProblem`, except for the number of "corners".
+```python
+def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
+    position, foodGrid = state
+    foodPos = foodGrid.asList()
+    i = 0
+    distance = [0] * foodPos.len()
+    for food in foodPos:
+        distance[i] = abs(position[0] - food[0]) + abs(position[1] - food[1])
+        i += 1
+    return max(distance)
+```
+- can't work: when there is no food, distance is an empty list and can't be used by `max`
+- `distance = [0] * (foodPos.len() + 1)`
+
+### Final Answer
+```python
+def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
+    position, foodGrid = state
+    "*** YOUR CODE HERE ***"
+    foodPos = foodGrid.asList()
+    distance = [0]
+    for food in foodPos:
+        distance.append(abs(position[0] - food[0]) + abs(position[1] - food[1]))
+    return max(distance)
+```
+
+```python
+def foodHeuristic(state: Tuple[Tuple, List[List]], problem: FoodSearchProblem):
+    position, foodGrid = state
+    foodPos = foodGrid.asList()
+    i = 0
+    distance = 0
+    for food in foodPos:
+        temp = abs(position[0] - food[0]) + abs(position[1] - food[1])
+        if temp > distance:
+            distance = temp
+    return distance
+```
+Search nodes expanded: 9551
+
+
+### another Solution
+https://github.com/molson194/Artificial-Intelligence-Berkeley-CS188/blob/master/Project-1/searchAgents.py
+```python
+def foodHeuristic(state, problem):
+    position, foodGrid = state
+    x, y = position
+    foodList = list(foodGrid.asList())
+    maxX = 0
+    maxY = 0
+    minX = 0
+    minY = 0
+
+    for item in foodList:
+        foodX, foodY = item
+        xDistance = foodX - x
+        yDistance = foodY - y
+        if xDistance > maxX:
+            maxX = xDistance
+        elif xDistance < minX:
+            minX = xDistance
+        if yDistance > maxY:
+            maxY = yDistance
+        elif yDistance < minY:
+            minY = yDistance
+    return maxX - minX + maxY - minY
+```
+Search nodes expanded: 8600
+
+## Question 8: Suboptimal Search
+You’ll write an agent that always greedily eats the closest dot. `ClosestDotSearchAgent` is implemented for you in searchAgents.py, but it’s missing a key function that finds a path to the closest dot.
+
+Implement the function `findPathToClosestDot` in searchAgents.py. 
+
+*Hint:* The quickest way to complete `findPathToClosestDot` is to fill in the AnyFoodSearchProblem, which is missing its goal test. Then, solve that problem with an appropriate search function. The solution should be very short!
+
+### How to Test
+```
+python3 pacman.py -l bigSearch -p ClosestDotSearchAgent -z .5
+```

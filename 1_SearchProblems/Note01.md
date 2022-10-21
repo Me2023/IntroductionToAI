@@ -63,7 +63,7 @@ queue*, where the priority for a given enqueued node v is the path cost from the
 Intuitively, a priority queue constructed in this manner simply reshuffles itself to maintain the desired ordering by path cost as we remove the current minimum cost path and replace it with its children.
 
 # Informed Search
-## Heuristics (Q6)
+## Heuristics (Q6, Q7)
 Heuristics are the driving force that allow estimation of distance to goal states - they’re *functions* that take
 in a *state* as input and output a corresponding *estimate*.
 
@@ -74,8 +74,13 @@ $$Manhattan(x_1, y_1,x_2,y_2) = |x_1−x_2|+|y_1−y_2|$$
 >> Assuming Pacman desires to get to the bottom left corner of the maze, it computes the *distance* from Pacman’s current location to Pacman’s desired location *assuming a lack of walls in the maze*. 
 >> 
 >> This distance is the exact goal distance in the relaxed search problem, and correspondingly is the estimated goal distance in the actual search problem.
-## Greedy Search
-## A* Search (Q4)
+## Greedy Search (Q8)
+Greedy search is a strategy for exploration that always selects the frontier node with the
+*lowest heuristic value* for expansion, which corresponds to the state it believes is nearest to a goal.
+
+Greedy search operates identically to UCS, with a *priority queue* Frontier Representation. The difference is that instead of using computed backward cost (the sum of edge weights in the path to the state) to assign priority, greedy search uses *estimated forward cost* in the form of heuristic values.
+
+## A* Search (Q4, Q6, Q7)
 A* search is a strategy for exploration that always selects the frontier node with the *lowest estimated total cost* for expansion, where total cost is the entire cost from the start node to the goal node.
 
 Just like greedy search and UCS, A* search also uses a *priority queue* to represent its frontier. 
