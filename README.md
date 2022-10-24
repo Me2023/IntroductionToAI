@@ -16,3 +16,14 @@ Mostly based on CS188 at UC Berkeley: https://inst.eecs.berkeley.edu/~cs188/su22
 
 ## 2. CSP and Games
 ### 2.1 Constraint Satisfaction Problems (CSPs)
+- Backtracking Search
+  - Filtering
+  - Ordering
+  - Structure
+- Local Search
+  - Hill-Climbing Search (steepest-ascent)
+  - Simulated Annealing Search
+  - Local Beam Search
+  - Genetic Algorithms
+
+### 2.2 Adversarial Search Problems (Games)
