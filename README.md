@@ -27,3 +27,13 @@ Mostly based on CS188 at UC Berkeley: https://inst.eecs.berkeley.edu/~cs188/su22
   - Genetic Algorithms
 
 ### 2.2 Adversarial Search Problems (Games)
+- Deterministic Zero-sum Games
+  - Minimax/Expectimax
+    - Alpha-Beta Pruning
+    - Evaluation Functions
+  - Monte Carlo Tree Search (MCTS) and UCT algorithms
+- General Games
+  - Multi-agent Utilities
+
+### Project 2: Multi-Agent Search
+- Files edited: `multiAgents.py` for Q1 ~ Q6

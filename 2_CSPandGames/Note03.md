@@ -94,3 +94,15 @@ Because minimax believes it is responding to an *optimal opponent*, it’s often
 Such situations include scenarios with inherent randomness such as card or dice games or unpredictable opponents that move randomly or suboptimally. We’ll talk about scenarios with *inherent randomness* much more in detail when we discuss *Markov decision processes* in the second half of the course.
 
 This randomness can be represented through a generalization of minimax known as expectimax. Expectimax introduces chance nodes into the game tree, which instead of considering the worst case scenario as minimizer nodes do, considers the average case.
+
+#### Mixed Layer Types
+
+### Monte Carlo Tree Search (MCTS)
+The **MCTS UCT algorithm** uses the **UCB criterion** in tree search problems.
+
+Note that because UCT inherently explores more promising children a higher number of times, as $N\to∞$, UCT approaches the behavior of a minimax agent.
+
+## General Games
+Not all games are zero-sum. Indeed, different agents may have have distinct tasks in a game that don’t directly involve strictly competing with one another. Such games can be set up with trees characterized by *multi-agent utilities*.
+
+Each agent then attempts to maximize their own utility at each node they control, ignoring the utilities of other agents.
